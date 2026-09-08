@@ -1,0 +1,83 @@
+/* =========================================================
+   站点自定义样式
+   1. 首页右侧组件：固定悬浮，默认收起，鼠标贴右展开
+   2. 搜索框：文字垂直居中，左右对称
+   3. 首页正文区域：异色高亮面板
+   ========================================================= */
+
+/* ---------- 1. 右侧组件悬浮收起 ---------- */
+@include respond(lg) {
+    .container.extended .right-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 320px;
+        max-width: 320px;
+        padding: var(--main-top-padding) var(--card-padding) var(--main-top-padding) var(--spacing-xl);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        background: var(--body-background);
+        border-radius: var(--card-border-radius) 0 0 var(--card-border-radius);
+        box-shadow: -6px 0 24px rgba(0, 0, 0, 0.1);
+        z-index: 20;
+        transform: translateX(calc(100% - 22px));
+        transition: transform 0.35s ease;
+    }
+
+    .container.extended .right-sidebar:hover,
+    .container.extended .right-sidebar:focus-within {
+        transform: translateX(0);
+    }
+
+    /* 收起时右侧边缘的悬浮拉手（与正文异色） */
+    .container.extended::after {
+        content: "◀";
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent-color);
+        color: var(--accent-color-text);
+        font-size: 1.2rem;
+        border-radius: 8px 0 0 8px;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.12);
+        z-index: 21;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+
+    .container.extended:has(.right-sidebar:hover)::after,
+    .container.extended:has(.right-sidebar:focus-within)::after {
+        opacity: 0;
+    }
+}
+
+/* ---------- 2. 搜索框对称 ---------- */
+.search-form.widget {
+    label {
+        display: none;
+    }
+
+    input {
+        padding: var(--spacing-md) var(--button-size) var(--spacing-md) var(--spacing-lg);
+        font-size: 1.5rem;
+        line-height: 1.5;
+    }
+}
+
+/* ---------- 3. 首页正文高亮面板 ---------- */
+main.main:has(> .article-list) {
+    @include respond(md) {
+        background: var(--card-background);
+        background: color-mix(in srgb, var(--accent-color) 6%, var(--card-background));
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+}
