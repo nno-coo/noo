@@ -1,4 +1,4 @@
-baseURL = 'https://nno-coo.github.io/my-blog/'
+baseURL = '/'
 locale = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
 hasCJKLanguage = true
@@ -24,8 +24,9 @@ published = '2006-01-02'
 lastUpdated = '2006-01-02'
 
 [params.sidebar]
-emoji = '📖'
-subtitle = '会吃饭会睡觉~'
+emoji = ''
+subtitle = '🎇 会吃饭会睡觉~'
+avatar = 'img/avatar-nno.png'
 
 [params.article]
 headingAnchor = true
@@ -45,7 +46,7 @@ homepage = [
 page = []
 
 [params.colorScheme]
-toggle = true
+toggle = false
 default = 'dark'
 
 [params.comments]

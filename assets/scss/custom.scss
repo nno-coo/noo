@@ -5,6 +5,20 @@
    3. 首页正文区域：异色高亮面板
    ========================================================= */
 
+/* ---------- 0. 全局字体（来自 assets 的 ttf） ---------- */
+:root {
+    --base-font-family: 'AiFont', var(--sys-font-family), sans-serif;
+}
+
+/* ---------- 0.1 猫爪鼠标指针（来自 ai 猫爪图，按下变淡粉） ---------- */
+* {
+    cursor: url("../img/cursor-paw-v4.png") 16 24, auto;
+}
+
+*:active {
+    cursor: url("../img/cursor-paw-pink-v4.png") 16 24, auto;
+}
+
 /* ---------- 1. 右侧组件悬浮收起 ---------- */
 @include respond(lg) {
     .container.extended .right-sidebar {
@@ -14,7 +28,7 @@
         bottom: 0;
         width: 320px;
         max-width: 320px;
-        padding: var(--main-top-padding) var(--card-padding) var(--main-top-padding) var(--spacing-xl);
+        padding: var(--main-top-padding) var(--card-padding) calc(var(--main-top-padding) + 60px) var(--spacing-xl);
         overflow-y: auto;
         overscroll-behavior: contain;
         background: var(--body-background);
@@ -30,26 +44,32 @@
         transform: translateX(0);
     }
 
-    /* 收起时右侧边缘的悬浮拉手（与正文异色） */
-    .container.extended::after {
-        content: "◀";
+    /* 收起时右侧边缘的猫耳朵（会摆动）；仅在有右侧组件的页面显示 */
+    .container.extended:has(.right-sidebar)::after {
+        content: "触碰→";
         position: fixed;
         top: 50%;
         right: 0;
-        transform: translateY(-50%);
-        width: 22px;
-        height: 96px;
+        margin-top: -74px;
+        width: 84px;
+        height: 148px;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
-        background: var(--accent-color);
-        color: var(--accent-color-text);
-        font-size: 1.2rem;
-        border-radius: 8px 0 0 8px;
-        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.12);
+        padding-bottom: 4px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.6rem;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        background-image: url("../img/cat-ears-rot3.png");
+        background-repeat: no-repeat;
+        background-position: right top;
+        background-size: 42px 108px;
+        filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
         z-index: 21;
         pointer-events: none;
         transition: opacity 0.25s ease;
+        transform-origin: 100% 50%;
+        animation: cat-ear-wiggle 2s ease-in-out infinite;
     }
 
     .container.extended:has(.right-sidebar:hover)::after,
@@ -58,7 +78,8 @@
     }
 }
 
-/* ---------- 2. 搜索框对称 ---------- */
+/* ---------- 2. 搜索框对称（首页组件 + 搜索页通用） ---------- */
+.search-form,
 .search-form.widget {
     label {
         display: none;
@@ -66,18 +87,182 @@
 
     input {
         padding: var(--spacing-md) var(--button-size) var(--spacing-md) var(--spacing-lg);
-        font-size: 1.5rem;
         line-height: 1.5;
     }
 }
 
-/* ---------- 3. 首页正文高亮面板 ---------- */
-main.main:has(> .article-list) {
+.search-form.widget input {
+    font-size: 1.5rem;
+}
+
+/* ---------- 3. 正文高亮面板（全站统一，各页起始位置一致） ---------- */
+main.main {
     @include respond(md) {
         background: var(--card-background);
         background: color-mix(in srgb, var(--accent-color) 6%, var(--card-background));
         border-radius: var(--card-border-radius);
         box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
+        padding-left: var(--card-padding);
+        padding-right: var(--card-padding);
+        padding-bottom: var(--card-padding);
     }
+}
+
+/* ---------- 4. 左侧栏细节 ---------- */
+/* 头像整体上移；底部预留固定页脚空间 */
+@include respond(md) {
+    .left-sidebar {
+        padding-top: calc(var(--main-top-padding) - 20px);
+        padding-bottom: calc(var(--main-top-padding) + 70px);
+        margin-left: 28px;
+    }
+}
+
+/* 左侧内容：头像大小、标题/简介字号、头像与文字间距 */
+.left-sidebar {
+    --sidebar-avatar-size: 112px;
+}
+
+.left-sidebar header {
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.left-sidebar header .site-meta {
+    gap: 18px;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.left-sidebar .site-meta .site-name {
+    font-size: 2.2rem;
+}
+
+.left-sidebar .site-meta .site-description {
+    font-size: 1.7rem;
+}
+
+/* 左侧菜单放大 */
+.left-sidebar #main-menu {
+    font-size: 2rem;
+
+    li svg {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* 方形头像（直角、居中显示） */
+.left-sidebar .site-avatar {
+    overflow: hidden;
+}
+
+.left-sidebar .site-avatar .site-logo {
+    border-radius: 0;
+    object-fit: cover;
+}
+
+/* 简介与菜单之间间隔加大 */
+@include respond(md) {
+    .left-sidebar #main-menu {
+        margin-top: 22px;
+    }
+}
+
+/* 菜单图标与文字间距缩小 */
+.left-sidebar #main-menu li a {
+    gap: 12px;
+}
+
+/* ---------- 4.5 猫耳朵摆动动画 ---------- */
+@keyframes cat-ear-wiggle {
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+/* ---------- 5. 左侧栏与正文之间的心跳分界线 ---------- */
+@keyframes heartbeat-scroll {
+    from {
+        background-position-y: 0;
+    }
+
+    to {
+        background-position-y: 100px;
+    }
+}
+
+@include respond(md) {
+    .left-sidebar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: calc(var(--section-separation) / -2 + 16px);
+        width: 20px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='100' viewBox='0 0 20 100'%3E%3Cpath d='M10 0 L10 32 L3 42 L17 52 L10 62 L10 100' fill='none' stroke='%23ffffff' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: repeat-y;
+        background-size: 20px 100px;
+        animation: heartbeat-scroll 2.5s linear infinite;
+        opacity: 0.95;
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+        pointer-events: none;
+        z-index: 2;
+    }
+}
+
+/* ---------- 6. 页脚签名固定底部 ---------- */
+footer.site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 15;
+    padding: 6px 16px 2px;
+    line-height: 1.45;
+    background: var(--body-background);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+    text-align: center;
+
+    &:before {
+        margin: 0 auto 6px;
+    }
+
+
+
+    .copyright {
+        margin-bottom: 0;
+    }
+}
+
+/* 避免正文被固定页脚遮挡 */
+main.main {
+    padding-bottom: 110px;
+}
+
+/* ---------- 7. 标签卡片缩小并居中 ---------- */
+.article-list--tile article {
+    --article-tile-width: 132px;
+    --article-tile-height: 64px;
+
+    .article-details {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 8px;
+    }
+
+    .article-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* ---------- 8. 右侧组件正文起始位置对齐 ---------- */
+.right-sidebar .widget.archives .archives-year a {
+    padding: 18px 20px;
 }
