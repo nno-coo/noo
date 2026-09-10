@@ -16,6 +16,8 @@
 
     var ctx = canvas.getContext('2d');
     var flakes = [];
+    var lastTime = 0;
+    var frameInterval = 33;
 
     function rand(min, max) {
         return Math.random() * (max - min) + min;
@@ -27,12 +29,12 @@
     }
 
     function createFlakes() {
-        var count = Math.round(window.innerWidth / 30);
-        if (count > 70) {
-            count = 70;
+        var count = Math.round(window.innerWidth / 45);
+        if (count > 45) {
+            count = 45;
         }
-        if (count < 28) {
-            count = 28;
+        if (count < 18) {
+            count = 18;
         }
         flakes = [];
         for (var i = 0; i < count; i++) {
@@ -48,7 +50,14 @@
         }
     }
 
-    function draw() {
+    function draw(ts) {
+        window.requestAnimationFrame(draw);
+
+        if (ts - lastTime < frameInterval) {
+            return;
+        }
+        lastTime = ts;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#ffffff';
         for (var i = 0; i < flakes.length; i++) {
@@ -58,15 +67,14 @@
             ctx.arc(f.x + Math.sin(f.phase) * 10, f.y, f.r, 0, Math.PI * 2);
             ctx.fill();
 
-            f.y += f.speed;
-            f.phase += 0.012 * f.sway;
+            f.y += f.speed * 1.7;
+            f.phase += 0.02 * f.sway;
             if (f.y > canvas.height + 6) {
                 f.y = -6;
                 f.x = rand(0, canvas.width);
             }
         }
         ctx.globalAlpha = 1;
-        window.requestAnimationFrame(draw);
     }
 
     resize();
