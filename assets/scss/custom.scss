@@ -267,25 +267,18 @@ main.main {
     padding: 18px 20px;
 }
 
-/* ---------- 9. 隐藏页面滚动条（保留滚动功能） ---------- */
+/* ---------- 9. 隐藏全站滚动条（保留滚动功能） ---------- */
 html {
     scrollbar-width: none;
     scrollbar-gutter: auto;
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none;
-}
-
-.container.extended .right-sidebar {
+* {
     scrollbar-width: none;
-}
 
-.container.extended .right-sidebar::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none;
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+    }
 }
